@@ -1,0 +1,47 @@
+#!/usr/bin/env python
+#-*- coding: utf-8 -*-
+
+def eratosthene(n):
+	"""retourne la liste_premiers des nombres premiers <= n (crible d'eratosthene)"""
+	n += 1
+	liste_premiers = [0,0] + [i for i in xrange(2, n)]
+	for i in xrange(2, n):
+		if liste_premiers[i] != 0:
+			# c'est un nombre 1er: on garde, mais on neutralise ses multiples
+			for j in xrange(i*2, n, i):
+				liste_premiers[j] = 0
+	return [p for p in liste_premiers if p!=0] 
+
+def decomposition_primaire(n):
+	resultat = []
+	liste_premiers = eratosthene(n)
+	while n != 1:
+		m = liste_premiers[0]
+		if n%m == 0:
+			resultat.append(m)
+			n = n/m
+		else:
+			liste_premiers=liste_premiers[1:]		
+	return resultat	
+	
+def indicatrice_euler(n):
+	decomp=decomposition_primaire(n)
+	resultat = 1
+	k = 1
+	n = decomp[0]
+	while len(decomp)>1:
+		decomp = decomp[1:]		
+		if decomp[0] == n:
+			k += 1 
+		else:
+			resultat = resultat * ((n-1)*(n**(k-1)))
+			k=1
+		n = decomp[0]
+	resultat = resultat * ((n-1)*(n**(k-1)))
+	return resultat			
+
+	
+n = input("Un nombre : ")
+#print "Crible d'ératosthène : ",eratosthene(n)
+#print "Décomposition Primaire : ",decomposition_primaire(n)
+print "Phi(n) = ",indicatrice_euler(n)
